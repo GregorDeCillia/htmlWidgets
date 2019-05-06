@@ -61,7 +61,7 @@ background-image: url("bg/gregor2.svg")
 .center[# About the speaker]
 
 .pull-right[
-* Methods unit of Statistics Austria
+* Methodology unit of Statistics Austria
 * Mainly working in .red[R]
     * data science
     * continuous integration
@@ -200,8 +200,7 @@ Create interactive time series
 library(dygraphs)
 lungDeaths <- cbind(mdeaths, fdeaths)
 widget <- dygraph(lungDeaths, main = "Deaths from Lung Disease (UK)") %>% dyHighlight()
-htmlwidgets::saveWidget(widget, "dygraphs.html", background = "#ffffffab")
-fs::file_copy("dygraphs.html", "widgets/dygraphs.html", overwrite = TRUE)
+save_widget(widget, "dygraphs.html", background = "#ffffffab")
 ```
 
 <iframe src="widgets/dygraphs.html" height = 400 width=700 frameBorder="0"></iframe>
