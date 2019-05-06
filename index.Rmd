@@ -105,7 +105,7 @@ save_widget(
   ))
 ```
 
-<iframe src="widgets/leaflet.html" height = 350 width=800 frameBorder="0"></iframe>
+<iframe src="widgets/leaflet.html" height = 350 width=700 frameBorder="0"></iframe>
 
 [fullscreen widget](widgets/leaflet.html)
 
@@ -162,7 +162,7 @@ save_widget(
   ))
 ```
 
-<iframe src="widgets/leaflet2.html" height = 350 width=800 frameBorder="0"></iframe>
+<iframe src="widgets/leaflet2.html" height = 350 width=700 frameBorder="0"></iframe>
 
 ---
 
@@ -204,7 +204,7 @@ htmlwidgets::saveWidget(widget, "dygraphs.html", background = "#ffffffab")
 fs::file_copy("dygraphs.html", "widgets/dygraphs.html", overwrite = TRUE)
 ```
 
-<iframe src="widgets/dygraphs.html" height = 400 width=800 frameBorder="0"></iframe>
+<iframe src="widgets/dygraphs.html" height = 400 width=700 frameBorder="0"></iframe>
 
 ---
 
@@ -228,7 +228,7 @@ widget <- dygraph(all, "Deaths from Lung Disease (UK)") %>%
 save_widget(widget, "dygraphs2.html", background = "#ffffffab")
 ```
 
-<iframe src="widgets/dygraphs2.html" height = 400 width=800 frameBorder="0"></iframe>
+<iframe src="widgets/dygraphs2.html" height = 400 width=700 frameBorder="0"></iframe>
 
 ---
 
@@ -245,7 +245,7 @@ widget <- sund2b(sequences, width = 600, height = 400)
 save_widget(widget, "sund2b2.html", background = "#ffffff8f")
 ```
 
-<iframe src="widgets/sund2b2.html" height = 480 width=800 frameBorder="0"></iframe>
+<iframe src="widgets/sund2b2.html" height = 480 width=700 frameBorder="0"></iframe>
 
 ---
 
@@ -283,7 +283,7 @@ widget <- DT::datatable(sequences, options = list(pageLength = 5, dom = "tp"),
 save_widget(widget, "sequences.html", background = "#ffffff8f")
 ```
 
-<iframe src="widgets/sequences.html" height = 350 width=800 frameBorder="0"></iframe>
+<iframe src="widgets/sequences.html" height = 350 width=700 frameBorder="0"></iframe>
 
 ---
 
@@ -306,7 +306,7 @@ widget <- sankeyNetwork(Links = Energy$links, Nodes = Energy$nodes, Source = "so
 save_widget(widget, "sankey.html")
 ```
 
-<iframe src="widgets/sankey.html" height = 400 width=800 frameBorder="0"></iframe>
+<iframe src="widgets/sankey.html" height = 400 width=700 frameBorder="0"></iframe>
 
 ---
 
@@ -340,7 +340,7 @@ widget <- forceNetwork(
 save_widget(widget, "force.html")
 ```
 
-<iframe src="widgets/force.html" height = 400 width=800 frameBorder="0"></iframe>
+<iframe src="widgets/force.html" height = 400 width=700 frameBorder="0"></iframe>
 
 ---
 
