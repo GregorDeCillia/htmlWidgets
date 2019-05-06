@@ -1,0 +1,31 @@
+html.dimbg .slide-background {
+  opacity: 0.2 !important;
+}
+
+.red {
+  color: steelblue;
+}
+
+.brighttext{
+  color: white;
+}
+
+.remark-slide-content{
+  font-size: 28px;
+  /*-webkit-text-fill-color: black; /* Will override color (regardless of order) 
+  -webkit-text-stroke-width: .5px;
+  -webkit-text-stroke-color: white;*/
+}
+
+.pull-right {
+    float: right;
+    width: 59%;
+}
+
+em{
+  color: steelblue;
+}
+
+.title-slide{
+  /*background-image: url("bg/treasure2.png");*/
+}

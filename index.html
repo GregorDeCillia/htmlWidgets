@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Effortles Creation of Interacitve Visualizations</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Gregor de Cillia" />
+    <link href="index_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="index_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="presentation.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Effortles Creation of Interacitve Visualizations
+## Gems from the R Language
+### Gregor de Cillia
+### May 2019
+
+---
+
+
+
+
+
+background-image: url("bg/treasure.png")
+
+# Introduction
+
+This presentation will showcase some R packages that create interactive
+visualizations.
+
+## Outline
+
+* What is R?
+* About the author
+* Criteria for showcased packages
+* Walk through the packages
+* Conclusions
+
+---
+
+background-image: url("bg/programming.png")
+
+# What is R?
+
+&gt; R is a programming language and free software environment for statistical 
+&gt; computing and **graphics**
+
+The functionality of R is provided by
+
+* The original R developers (core functionality)
+* Extension packages from
+    * institutions
+    * individuals
+    * currently there are 14141 packages available
+      on the official CRAN archive
+
+---
+
+background-image: url("bg/gregor2.svg")
+
+.center[# About the speaker]
+
+.pull-right[
+* Methods unit of Statistics Austria
+* Mainly working in .red[R]
+    * data science
+    * continuous integration
+    * automatic reporting
+    * web applications
+    - *visualization*
+]
+    
+---
+
+background-image: url("bg/notebook.png")
+
+# Criteria
+
+The packages have been selected according to the following criteria
+
+- interactive
+- applicable for official statistics
+- easy to use
+- easy to install
+
+---
+
+background-image: url("bg/image10.png")
+
+# Leaflet
+
+Allows the creation of interactive maps 
+
+
+
+&lt;iframe src="widgets/leaflet.html" height = 350 width=800 frameBorder="0"&gt;&lt;/iframe&gt;
+
+[fullscreen widget](widgets/leaflet.html)
+
+---
+
+background-image: url("bg/image10.png")
+
+# Leaflet
+
+## usecases
+
+* population densities
+* important companies
+
+## Features
+
+* map data is fetched dynamically
+    * updates when user zooms in/out
+* includes information from openstreetmap.org
+* allows layers
+    * markers, tooltips
+    * shapes(circles, polygons)
+
+---
+
+background-image: url("bg/image10.png")
+
+# Leaflet
+
+Usage of cicles to visualize population densities
+
+[fullscreen widget](widgets/leaflet2.html)
+
+
+
+&lt;iframe src="widgets/leaflet2.html" height = 350 width=800 frameBorder="0"&gt;&lt;/iframe&gt;
+
+---
+
+background-image: url("bg/image10.png")
+
+# Leaflet (syntax)
+
+The datasets use longitude and latitude coordinates as well as point labels
+
+
+```r
+head(cities, 3)
+```
+
+```
+##            City     Lat     Long     Pop
+## 1        Boston 42.3601 -71.0589  645966
+## 2      Hartford 41.7627 -72.6743  125017
+## 3 New York City 40.7127 -74.0059 8406000
+```
+
+
+
+```r
+# install.packages("leaflet")
+library(leaflet)
+
+widget &lt;- leaflet(cities) %&gt;% addTiles() %&gt;%
+  addCircles(lng = ~Long, lat = ~Lat, weight = 1,
+    radius = ~sqrt(Pop) * 30, popup = ~City
+  )
+htmlwidgets::saveWidget(widget, "myWidget.html")
+```
+
+---
+
+background-image: url("bg/stock_new.png")
+
+# Dygraphs
+
+Create interactive time series
+
+
+
+&lt;iframe src="widgets/dygraphs.html" height = 400 width=800 frameBorder="0"&gt;&lt;/iframe&gt;
+
+---
+
+background-image: url("bg/stock_new.png")
+
+# Dygraphs
+
+* very fast zooming
+* series highlighting
+* upper/lower bars for prediction intervals
+
+
+
+&lt;iframe src="widgets/dygraphs2.html" height = 400 width=800 frameBorder="0"&gt;&lt;/iframe&gt;
+
+---
+
+background-image: url("bg/sundown.png")
+class: brighttext
+
+## sunburstR
+
+
+
+&lt;iframe src="widgets/sund2b2.html" height = 480 width=800 frameBorder="0"&gt;&lt;/iframe&gt;
+
+---
+
+background-image: url("bg/sundown.png")
+class: brighttext
+
+# sunburstR
+
+Sunburts graphics can be regarded as pie charts for hierarchic datasets
+
+The sunburstR package is built around the JavaScript library d3.js
+
+Syntax
+
+
+```r
+# install.packages("sunburstR")
+library(sunburtsR)
+widget &lt;- sund2b(my_data)
+htmlwidgets::saveWidget(widget, file = "widget.html")
+```
+
+---
+
+background-image: url("bg/sundown.png")
+class: brighttext
+
+# sunburstR (Dataset)
+
+* First column: COICOP group (separator: `-`)
+* Second columnn: expeditures in million euro
+
+
+
+&lt;iframe src="widgets/sequences.html" height = 350 width=800 frameBorder="0"&gt;&lt;/iframe&gt;
+
+---
+
+background-image: url("bg/web-rain.png")
+
+# networkD3
+
+can create sankey diagrams ([fullscreen](widgets/sankey.html), [details about the data](https://bost.ocks.org/mike/sankey/))
+
+
+
+&lt;iframe src="widgets/sankey.html" height = 400 width=800 frameBorder="0"&gt;&lt;/iframe&gt;
+
+---
+
+background-image: url("bg/web-rain.png")
+
+# networkD3
+
+* This package contains several vizualization tools for network data
+* network data is representated as nodes and links
+
+
+```r
+head(Energy$nodes$name)
+```
+
+```
+## [1] "Agricultural 'waste'" "Bio-conversion"       "Liquid"              
+## [4] "Losses"               "Solid"                "Gas"
+```
+
+```r
+head(Energy$links, 4)
+```
+
+```
+##   source target   value
+## 1      0      1 124.729
+## 2      1      2   0.597
+## 3      1      3  26.862
+## 4      1      4 280.322
+```
+
+---
+
+background-image: url("bg/web-rain.png")
+
+# networkD3
+
+Also includes a force network which shows the nodes in an unstructured manner [fullscreen](widgets/force.html)
+
+
+
+&lt;iframe src="widgets/force.html" height = 400 width=800 frameBorder="0"&gt;&lt;/iframe&gt;
+
+---
+
+background-image: url("bg/treasure.png")
+
+# Conclusions
+
+* visualization tools in R are becoming more and more interactive
+* widgets can be created in the R console
+    * No JavaScript/CSS/HTML knowledge required
+* widgets can be exported as HTML
+    * easy embedding in websites
+* reproducibility
+    * all packages showcased here can be installed with `install.packages`
+    * The presentation is available at http://GregordeCillia.github.io/htmlWidgets/
+
+[d3.js]: https://d3js.org/
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

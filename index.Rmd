@@ -1,0 +1,360 @@
+---
+title: "Effortles Creation of Interacitve Visualizations"
+subtitle: "Gems from the R Language"
+author: "Gregor de Cillia"
+date: "May 2019"
+output: 
+  xaringan::moon_reader:
+    css: [default, default-fonts, presentation.css]
+---
+
+```{r, include = FALSE}
+save_widget <- function(widget, file, ...) {
+  htmlwidgets::saveWidget(
+    widget, file, 
+    ...
+  )
+  if (fs::file_exists(new_file <- fs::path("widgets", file)))
+    fs::file_delete(new_file)
+  fs::file_move(file, new_file)
+}
+```
+
+
+background-image: url("bg/treasure.png")
+
+# Introduction
+
+This presentation will showcase some R packages that create interactive
+visualizations.
+
+## Outline
+
+* What is R?
+* About the author
+* Criteria for showcased packages
+* Walk through the packages
+* Conclusions
+
+---
+
+background-image: url("bg/programming.png")
+
+# What is R?
+
+> R is a programming language and free software environment for statistical 
+> computing and **graphics**
+
+The functionality of R is provided by
+
+* The original R developers (core functionality)
+* Extension packages from
+    * institutions
+    * individuals
+    * currently there are `r nrow(available.packages())` packages available
+      on the official CRAN archive
+
+---
+
+background-image: url("bg/gregor2.svg")
+
+.center[# About the speaker]
+
+.pull-right[
+* Methods unit of Statistics Austria
+* Mainly working in .red[R]
+    * data science
+    * continuous integration
+    * automatic reporting
+    * web applications
+    - *visualization*
+]
+    
+---
+
+background-image: url("bg/notebook.png")
+
+# Criteria
+
+The packages have been selected according to the following criteria
+
+- interactive
+- applicable for official statistics
+- easy to use
+- easy to install
+
+---
+
+background-image: url("bg/image10.png")
+
+# Leaflet
+
+Allows the creation of interactive maps 
+
+```{r, include = FALSE}
+library(leaflet)
+widget <- leaflet() %>% addTiles() %>% 
+  setView(9.1966859, 45.4768277, zoom = 19) %>% 
+  addMarkers(9.1966859, 45.4768277, 
+             label = htmltools::HTML("<h3>Visualization Workshop</h3><br/>where we are right now"))
+
+save_widget(
+  widget, "leaflet.html", 
+  knitrOptions = list(
+    out.width = 20, out.height = 20
+  ))
+```
+
+<iframe src="widgets/leaflet.html" height = 350 width=800 frameBorder="0"></iframe>
+
+[fullscreen widget](widgets/leaflet.html)
+
+---
+
+background-image: url("bg/image10.png")
+
+# Leaflet
+
+## usecases
+
+* population densities
+* important companies
+
+## Features
+
+* map data is fetched dynamically
+    * updates when user zooms in/out
+* includes information from openstreetmap.org
+* allows layers
+    * markers, tooltips
+    * shapes(circles, polygons)
+
+---
+
+background-image: url("bg/image10.png")
+
+# Leaflet
+
+Usage of cicles to visualize population densities
+
+[fullscreen widget](widgets/leaflet2.html)
+
+```{r, include = FALSE}
+cities <- read.csv(textConnection("
+City,Lat,Long,Pop
+Boston,42.3601,-71.0589,645966
+Hartford,41.7627,-72.6743,125017
+New York City,40.7127,-74.0059,8406000
+Philadelphia,39.9500,-75.1667,1553000
+Pittsburgh,40.4397,-79.9764,305841
+Providence,41.8236,-71.4222,177994
+"))
+
+widget <- leaflet(cities) %>% addTiles() %>%
+  addCircles(lng = ~Long, lat = ~Lat, weight = 1,
+    radius = ~sqrt(Pop) * 30, popup = ~City
+  )
+
+save_widget(
+  widget, "leaflet2.html", 
+  knitrOptions = list(
+    out.width = 20, out.height = 20
+  ))
+```
+
+<iframe src="widgets/leaflet2.html" height = 350 width=800 frameBorder="0"></iframe>
+
+---
+
+background-image: url("bg/image10.png")
+
+# Leaflet (syntax)
+
+The datasets use longitude and latitude coordinates as well as point labels
+
+```{r}
+head(cities, 3)
+```
+
+
+```{r, eval = FALSE}
+# install.packages("leaflet")
+library(leaflet)
+
+widget <- leaflet(cities) %>% addTiles() %>%
+  addCircles(lng = ~Long, lat = ~Lat, weight = 1,
+    radius = ~sqrt(Pop) * 30, popup = ~City
+  )
+htmlwidgets::saveWidget(widget, "myWidget.html")
+```
+
+---
+
+background-image: url("bg/stock_new.png")
+
+# Dygraphs
+
+Create interactive time series
+
+```{r, include = FALSE}
+library(dygraphs)
+lungDeaths <- cbind(mdeaths, fdeaths)
+widget <- dygraph(lungDeaths, main = "Deaths from Lung Disease (UK)") %>% dyHighlight()
+htmlwidgets::saveWidget(widget, "dygraphs.html", background = "#ffffffab")
+fs::file_copy("dygraphs.html", "widgets/dygraphs.html", overwrite = TRUE)
+```
+
+<iframe src="widgets/dygraphs.html" height = 400 width=800 frameBorder="0"></iframe>
+
+---
+
+background-image: url("bg/stock_new.png")
+
+# Dygraphs
+
+* very fast zooming
+* series highlighting
+* upper/lower bars for prediction intervals
+
+```{r, include = FALSE}
+hw <- HoltWinters(ldeaths)
+p <- predict(hw, n.ahead = 36, prediction.interval = TRUE)
+all <- cbind(ldeaths, p)
+
+widget <- dygraph(all, "Deaths from Lung Disease (UK)") %>%
+  dySeries("ldeaths", label = "Actual") %>%
+  dySeries(c("p.lwr", "p.fit", "p.upr"), label = "Predicted") %>% 
+  dyHighlight()
+save_widget(widget, "dygraphs2.html", background = "#ffffffab")
+```
+
+<iframe src="widgets/dygraphs2.html" height = 400 width=800 frameBorder="0"></iframe>
+
+---
+
+background-image: url("bg/sundown.png")
+class: brighttext
+
+## sunburstR
+
+```{r, include = FALSE}
+library(sunburstR)
+sequences <- source("coicop/import_coicop.R", local = new.env())$value
+
+widget <- sund2b(sequences, width = 600, height = 400)
+save_widget(widget, "sund2b2.html", background = "#ffffff8f")
+```
+
+<iframe src="widgets/sund2b2.html" height = 480 width=800 frameBorder="0"></iframe>
+
+---
+
+background-image: url("bg/sundown.png")
+class: brighttext
+
+# sunburstR
+
+Sunburts graphics can be regarded as pie charts for hierarchic datasets
+
+The sunburstR package is built around the JavaScript library d3.js
+
+Syntax
+
+```{r, eval = FALSE}
+# install.packages("sunburstR")
+library(sunburtsR)
+widget <- sund2b(my_data)
+htmlwidgets::saveWidget(widget, file = "widget.html")
+```
+
+---
+
+background-image: url("bg/sundown.png")
+class: brighttext
+
+# sunburstR (Dataset)
+
+* First column: COICOP group (separator: `-`)
+* Second columnn: expeditures in million euro
+
+```{r, include = FALSE}
+widget <- DT::datatable(sequences, options = list(pageLength = 5, dom = "tp"), 
+                        width = 550, height = 200, rownames = FALSE)
+save_widget(widget, "sequences.html", background = "#ffffff8f")
+```
+
+<iframe src="widgets/sequences.html" height = 350 width=800 frameBorder="0"></iframe>
+
+---
+
+background-image: url("bg/web-rain.png")
+
+# networkD3
+
+can create sankey diagrams ([fullscreen](widgets/sankey.html), [details about the data](https://bost.ocks.org/mike/sankey/))
+
+```{r, include = FALSE}
+library(networkD3)
+URL <- paste0(
+        "https://cdn.rawgit.com/christophergandrud/networkD3/",
+        "master/JSONdata/energy.json")
+Energy <- jsonlite::fromJSON(URL)
+# Plot
+widget <- sankeyNetwork(Links = Energy$links, Nodes = Energy$nodes, Source = "source",
+             Target = "target", Value = "value", NodeID = "name",
+             units = "TWh", fontSize = 12, nodeWidth = 30)
+save_widget(widget, "sankey.html")
+```
+
+<iframe src="widgets/sankey.html" height = 400 width=800 frameBorder="0"></iframe>
+
+---
+
+background-image: url("bg/web-rain.png")
+
+# networkD3
+
+* This package contains several vizualization tools for network data
+* network data is representated as nodes and links
+
+```{r}
+head(Energy$nodes$name)
+head(Energy$links, 4)
+```
+
+---
+
+background-image: url("bg/web-rain.png")
+
+# networkD3
+
+Also includes a force network which shows the nodes in an unstructured manner [fullscreen](widgets/force.html)
+
+```{r, include = FALSE}
+widget <- forceNetwork(
+  Links = Energy$links, 
+  Nodes = cbind(Energy$nodes, group = sample(1:4, nrow(Energy$nodes), TRUE)),
+  Source = "source", Target = "target",
+  Value = "value", NodeID = "name",
+  Group = "group", opacity = 0.8,zoom = TRUE)
+save_widget(widget, "force.html")
+```
+
+<iframe src="widgets/force.html" height = 400 width=800 frameBorder="0"></iframe>
+
+---
+
+background-image: url("bg/treasure.png")
+
+# Conclusions
+
+* visualization tools in R are becoming more and more interactive
+* widgets can be created in the R console
+    * No JavaScript/CSS/HTML knowledge required
+* widgets can be exported as HTML
+    * easy embedding in websites
+* reproducibility
+    * all packages showcased here can be installed with `install.packages`
+    * The presentation is available at http://GregordeCillia.github.io/htmlWidgets/
+
+[d3.js]: https://d3js.org/
